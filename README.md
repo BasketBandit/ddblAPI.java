@@ -22,7 +22,7 @@ Methods:
 	}
  
 	dependencies {
-	        implementation 'com.github.BasketBandit:DDBL-Java:VERSION'
+	        implementation 'com.github.BasketBandit:ddblAPI.java:VERSION'
 	}
  ```
  
@@ -37,7 +37,7 @@ Maven:
 	
     <dependency>
         <groupId>com.github.BasketBandit</groupId>
-        <artifactId>DDBL-Java</artifactId>
+        <artifactId>ddblAPI.java</artifactId>
         <version>VERSION</version>
     </dependency>
 ```

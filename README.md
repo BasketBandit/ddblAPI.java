@@ -1,8 +1,8 @@
-# DDBL-Java
+# ddblAPI.java
 
-Java wrapper for the [Divine Discord Bot List](https://divinediscordbots.com/) API.
+Java wrapper for the [DivineDiscordBotList](https://divinediscordbots.com/) API.
 
-[![](https://jitpack.io/v/BasketBandit/DDBL-Java.svg)](https://jitpack.io/#BasketBandit/DDBL-Java)
+[![](https://jitpack.io/v/BasketBandit/ddblAPI.java.svg)](https://jitpack.io/#BasketBandit/ddblAPI.java)
 
 Methods:
 ```

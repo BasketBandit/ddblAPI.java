@@ -1,9 +1,9 @@
-package com.basketbandit.ddbl;
+package com.basketbandit.ddbl.entity;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
-public class BotInformation {
+public class DivineDiscordBotInfo {
 
     private BotStats botStats;
     private String name;
@@ -16,7 +16,7 @@ public class BotInformation {
     private String[] owners;
     private boolean nsfw;
 
-    public BotInformation(JsonObject object) {
+    public DivineDiscordBotInfo(JsonObject object) {
         if(object == null) {
             return;
         }

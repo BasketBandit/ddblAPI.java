@@ -1,17 +1,20 @@
 package com.basketbandit.ddbl;
 
+import com.basketbandit.ddbl.entity.DivineDiscordBotInfo;
+import com.basketbandit.ddbl.entity.Vote;
+import com.basketbandit.ddbl.io.RequestHandler;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.net.ssl.HttpsURLConnection;
-import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DivineDiscordBotList {
 
@@ -63,19 +66,36 @@ public class DivineDiscordBotList {
     }
 
     /**
-     * Retrieves Divine Discord Bot List bot stats.
+     * Retrieves DivineDiscordBotList bot stats.
      *
-     * @return BotInformation
+     * @return DivineDiscordBotInfo
      */
-    public BotInformation getStats() {
-        JsonObject stats = doRequest("https://divinediscordbots.com/bot/" + this.botId + "/stats");
+    public DivineDiscordBotInfo getStats() {
+        JsonObject stats = RequestHandler.doRequest("https://divinediscordbots.com/bot/" + this.botId + "/stats");
 
         if(stats.has("stats")) {
-            return new BotInformation(stats);
+            return new DivineDiscordBotInfo(stats);
         }
 
         log.error("There was a problem processing that request. -> getStats()");
         return null;
+    }
+
+    /**
+     * Retrieves a list of all votes given to the bot.
+     *
+     * @return List<Vote>
+     */
+    public List<Vote> getVotes() {
+        JsonArray votes = RequestHandler.doRequest("https://divinediscordbots.com/bot/" + this.botId + "/votes").getAsJsonArray("votes");
+
+        ArrayList<Vote> voteList = new ArrayList<>();
+        for(JsonElement vote: votes) {
+            JsonObject voteObject = vote.getAsJsonObject();
+            voteList.add(new Vote(voteObject.get("id").getAsString(), voteObject.get("discriminator").getAsString(), voteObject.get("username").getAsString(), voteObject.get("timestamp").getAsString()));
+        }
+
+        return voteList;
     }
 
     /**
@@ -96,7 +116,7 @@ public class DivineDiscordBotList {
      * @return boolean if the user has voted or not
      */
     public boolean hasVoted(String userId, int hours) {
-        JsonArray votes = doRequest("https://divinediscordbots.com/bot/" + this.botId + "/votes?filter=" + hours).getAsJsonArray("votes");
+        JsonArray votes = RequestHandler.doRequest("https://divinediscordbots.com/bot/" + this.botId + "/votes?filter=" + hours).getAsJsonArray("votes");
 
         for(JsonElement vote: votes) {
             if(vote.getAsJsonObject().get("id").getAsString().equals(userId)) {
@@ -105,38 +125,6 @@ public class DivineDiscordBotList {
         }
 
         return false;
-    }
-
-    /**
-     * A HttpsURLConnection method used to connect to and return a JsonObject from the server.
-     *
-     * @param url the endpoint to hit up
-     * @return JsonObject of the returned content
-     */
-    private JsonObject doRequest(String url) {
-        try {
-            HttpsURLConnection connection = (HttpsURLConnection) new URL(url).openConnection();
-            connection.setRequestMethod("GET");
-            connection.addRequestProperty("Content-Type", "application/json");
-            connection.setRequestProperty("Accept", "application/json");
-
-            if(connection.getResponseCode() != 200) {
-                throw new IOException("Unable to retrieve information from the server.");
-            }
-
-            ByteArrayOutputStream result = new ByteArrayOutputStream();
-            byte[] buffer = new byte[1024];
-            int length;
-
-            while((length = connection.getInputStream().read(buffer)) != -1) {
-                result.write(buffer, 0, length);
-            }
-
-            return new JsonParser().parse(result.toString()).getAsJsonObject();
-        } catch(IOException e) {
-            e.printStackTrace();
-            return new JsonParser().parse("{}").getAsJsonObject();
-        }
     }
 
     /**
@@ -175,7 +163,6 @@ public class DivineDiscordBotList {
 
             return ddbl;
         }
-
     }
 
 }

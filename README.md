@@ -8,6 +8,7 @@ Methods:
 ```
  .postStats(int serverCount)
  .getStats()
+ .getVotes()
  .hasVoted(String userId)
  .hasVoted(String userId, int hours)
  ```

@@ -9,22 +9,34 @@ import com.google.gson.JsonObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.net.ssl.HttpsURLConnection;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 public class DivineDiscordBotList {
-
     private static final Logger log = LoggerFactory.getLogger(DivineDiscordBotList.class);
-
     private String botId;
     private String token;
-    private static long lastPost = 0;
 
     private DivineDiscordBotList() {
+    }
+
+    /**
+     * Posts bot server & shard count to the server.
+     *
+     * @param serverCount number of servers
+     * @param shardCount number of shards
+     */
+    public void postStats(int serverCount, int shardCount) {
+        if(serverCount < 0) {
+            throw new IllegalArgumentException("Server count must be 0 or greater.");
+        }
+
+        if(shardCount < 0) {
+            throw new IllegalArgumentException("Shard count must be 0 or greater.");
+        }
+
+        String json = "{\"server_count\" : " + serverCount + ", \"shards\" : " + shardCount + "}";
+        RequestHandler.doRequest("https://divinediscordbots.com/bot/" + this.botId + "/stats", this.token, json);
     }
 
     /**
@@ -33,36 +45,21 @@ public class DivineDiscordBotList {
      * @param serverCount number of servers
      */
     public void postStats(int serverCount) {
-        try {
-            if(serverCount < 0) {
-                throw new IllegalArgumentException("Server count must be 0 or greater.");
-            }
-
-            if((System.currentTimeMillis() - lastPost) < 60000) {
-                log.warn("You can only post server count every 1 minute.");
-                return;
-            }
-
-            String inputString = "{" + serverCount + "}";
-            byte[] input = inputString.getBytes();
-
-            HttpsURLConnection connection = (HttpsURLConnection) new URL("https://divinediscordbots.com/bot/" + this.botId + "/stats").openConnection();
-            connection.addRequestProperty("Authorization", this.token);
-            connection.addRequestProperty("Content-Type", "application/json");
-            connection.setRequestProperty("Accept", "application/json");
-            connection.setRequestMethod("POST");
-            connection.setDoOutput(true);
-
-            DataOutputStream outputStream = new DataOutputStream(connection.getOutputStream());
-            outputStream.write(input, 0, input.length);
-            outputStream.flush();
-            outputStream.close();
-
-            lastPost = System.currentTimeMillis();
-
-        } catch(IOException e) {
-            log.error("There was a problem processing that request. -> postStats()");
+        if(serverCount < 0) {
+            throw new IllegalArgumentException("Server count must be 0 or greater.");
         }
+
+        String json = "{\"server_count\" : " + serverCount + "}";
+        RequestHandler.doRequest("https://divinediscordbots.com/bot/" + this.botId + "/stats", this.token, json);
+    }
+
+    /**
+     * Finds out if the rate limiting has expired.
+     *
+     * @return boolean if the rate limiting has expired
+     */
+    public boolean canPost() {
+        return RequestHandler.canPost();
     }
 
     /**

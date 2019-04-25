@@ -7,6 +7,8 @@ Java wrapper for the [DivineDiscordBotList](https://divinediscordbots.com/) API.
 Methods:
 ```
  .postStats(int serverCount)
+ .postStats(int serverCount, int shardCount)
+ .canPost()
  .getStats()
  .getVotes()
  .hasVoted(String userId)

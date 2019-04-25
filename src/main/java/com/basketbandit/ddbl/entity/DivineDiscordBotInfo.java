@@ -51,7 +51,7 @@ public class DivineDiscordBotInfo {
         return owner;
     }
 
-    public String getShortdesc() {
+    public String getShortDesc() {
         return shortdesc;
     }
 

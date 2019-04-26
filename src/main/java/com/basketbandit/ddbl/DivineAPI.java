@@ -1,6 +1,6 @@
 package com.basketbandit.ddbl;
 
-import com.basketbandit.ddbl.entity.DivineDiscordBotInfo;
+import com.basketbandit.ddbl.entity.DivineBot;
 import com.basketbandit.ddbl.entity.Vote;
 import com.basketbandit.ddbl.io.RequestHandler;
 import com.google.gson.JsonArray;
@@ -12,12 +12,12 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DivineDiscordBotList {
-    private static final Logger log = LoggerFactory.getLogger(DivineDiscordBotList.class);
+public class DivineAPI {
+    private static final Logger log = LoggerFactory.getLogger(DivineAPI.class);
     private String botId;
     private String token;
 
-    private DivineDiscordBotList() {
+    private DivineAPI() {
     }
 
     /**
@@ -36,7 +36,7 @@ public class DivineDiscordBotList {
         }
 
         String json = "{\"server_count\" : " + serverCount + ", \"shards\" : " + shardCount + "}";
-        RequestHandler.doRequest("https://divinediscordbots.com/bot/" + this.botId + "/stats", this.token, json);
+        RequestHandler.doRequest(this.botId, "stats", this.token, json);
     }
 
     /**
@@ -50,7 +50,7 @@ public class DivineDiscordBotList {
         }
 
         String json = "{\"server_count\" : " + serverCount + "}";
-        RequestHandler.doRequest("https://divinediscordbots.com/bot/" + this.botId + "/stats", this.token, json);
+        RequestHandler.doRequest(this.botId, "stats", this.token, json);
     }
 
     /**
@@ -63,15 +63,15 @@ public class DivineDiscordBotList {
     }
 
     /**
-     * Retrieves DivineDiscordBotList bot stats.
+     * Retrieves DivineAPI bot stats.
      *
-     * @return DivineDiscordBotInfo
+     * @return DivineBot
      */
-    public DivineDiscordBotInfo getStats() {
-        JsonObject stats = RequestHandler.doRequest("https://divinediscordbots.com/bot/" + this.botId + "/stats");
+    public DivineBot getStats() {
+        JsonObject stats = RequestHandler.doRequest(this.botId, "stats");
 
         if(stats.has("stats")) {
-            return new DivineDiscordBotInfo(stats);
+            return new DivineBot(stats);
         }
 
         log.error("There was a problem processing that request. -> getStats()");
@@ -84,7 +84,7 @@ public class DivineDiscordBotList {
      * @return List<Vote>
      */
     public List<Vote> getVotes() {
-        JsonArray votes = RequestHandler.doRequest("https://divinediscordbots.com/bot/" + this.botId + "/votes").getAsJsonArray("votes");
+        JsonArray votes = RequestHandler.doRequest(this.botId, "votes").getAsJsonArray("votes");
 
         ArrayList<Vote> voteList = new ArrayList<>();
         for(JsonElement vote: votes) {
@@ -113,7 +113,7 @@ public class DivineDiscordBotList {
      * @return boolean if the user has voted or not
      */
     public boolean hasVoted(String userId, int hours) {
-        JsonArray votes = RequestHandler.doRequest("https://divinediscordbots.com/bot/" + this.botId + "/votes?filter=" + hours).getAsJsonArray("votes");
+        JsonArray votes = RequestHandler.doRequest(this.botId, "votes?filter=" + hours).getAsJsonArray("votes");
 
         for(JsonElement vote: votes) {
             if(vote.getAsJsonObject().get("id").getAsString().equals(userId)) {
@@ -125,7 +125,7 @@ public class DivineDiscordBotList {
     }
 
     /**
-     * Builder class for DivineDiscordBotList
+     * Builder class for DivineAPI
      */
     public static class Builder {
         private String botId;
@@ -144,8 +144,8 @@ public class DivineDiscordBotList {
             return this;
         }
 
-        public DivineDiscordBotList build() {
-            DivineDiscordBotList ddbl = new DivineDiscordBotList();
+        public DivineAPI build() {
+            DivineAPI ddbl = new DivineAPI();
 
             if(botId == null) {
                 throw new IllegalArgumentException("The provided bot ID cannot be null.");

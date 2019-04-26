@@ -19,7 +19,7 @@ Java wrapper for the [DivineDiscordBotList](https://divinediscordbots.com/) API.
 
 ### Setup
 ```java
-DivineDiscordBotList ddbl = new DivineDiscordBotList.Builder()
+DivineAPI ddbl = new DivineAPI.Builder()
         .botId("botId")
         .token("token")
         .build();
@@ -50,10 +50,10 @@ if(canPost()) {
 
 **Stats** - Retrieve the stats stored about your bot, such as description and server count.
 ```java
-DivineDiscordBotInfo botInfo = ddbl.getStats();
+DivineBot bot = ddbl.getStats();
 
-botInfo.getDescription(); // Long description of your bot.
-botInfo.getStats().getServerCount() // Server count of your bot.
+bot.getDescription(); // Long description of your bot.
+bot.getStats().getServerCount() // Server count of your bot.
 ```
 
 **Votes** - Retrieve a list of all of the votes for your bot.
@@ -61,7 +61,7 @@ botInfo.getStats().getServerCount() // Server count of your bot.
 List<Vote> votes = ddbl.getVotes();
 
 votes.getSize(); // Number of votes.
-vote.get(0).getUsername(); // Username of the user for vote index 0.
+votes.get(0).getUsername(); // Username of the user for vote index 0.
 ```
 
 **Voted #1** - Retrieves a boolean value of if a user has voted in the past 24 hours.

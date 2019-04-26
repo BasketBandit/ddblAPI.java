@@ -3,7 +3,7 @@ package com.basketbandit.ddbl.entity;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
-public class DivineDiscordBotInfo {
+public class DivineBot {
 
     private BotStats botStats;
     private String name;
@@ -16,7 +16,7 @@ public class DivineDiscordBotInfo {
     private String[] owners;
     private boolean nsfw;
 
-    public DivineDiscordBotInfo(JsonObject object) {
+    public DivineBot(JsonObject object) {
         if(object == null) {
             return;
         }

@@ -18,12 +18,13 @@ public class RequestHandler {
     /**
      * A HttpsURLConnection method used to connect to and return a JsonObject from the server.
      *
-     * @param url the endpoint to hit up
+     * @param botId the ID of the bot to do the request against
+     * @param endpoint which API endpoint to hit up
      * @return JsonObject of the returned content
      */
-    public static JsonObject doRequest(String url) {
+    public static JsonObject doRequest(String botId, String endpoint) {
         try {
-            HttpsURLConnection connection = (HttpsURLConnection) new URL(url).openConnection();
+            HttpsURLConnection connection = (HttpsURLConnection) new URL("https://divinediscordbots.com/bot/" + botId + "/" + endpoint).openConnection();
             connection.setRequestMethod("GET");
             connection.addRequestProperty("Content-Type", "application/json");
             connection.setRequestProperty("Accept", "application/json");
@@ -42,7 +43,7 @@ public class RequestHandler {
 
             return new JsonParser().parse(result.toString()).getAsJsonObject();
         } catch(IOException e) {
-            e.printStackTrace();
+            log.error("There was a problem processing that request. -> doRequest() [GET]");
             return new JsonParser().parse("{}").getAsJsonObject();
         }
     }
@@ -50,9 +51,12 @@ public class RequestHandler {
     /**
      * A HttpsURLConnection method used to connect to and post JSON data to the server.
      *
-     * @param url the endpoint to hit up
+     * @param botId the ID of the bot to do the request against
+     * @param endpoint which API endpoint to hit up
+     * @param token API token to use for authentication
+     * @param data json data to send to the server
      */
-    public static void doRequest(String url, String token, String data) {
+    public static void doRequest(String botId, String endpoint, String token, String data) {
         try {
             if(!canPost()) {
                 log.warn("You can only post server count every 1 minute.");
@@ -61,7 +65,7 @@ public class RequestHandler {
 
             byte[] input = data.getBytes();
 
-            HttpsURLConnection connection = (HttpsURLConnection) new URL(url).openConnection();
+            HttpsURLConnection connection = (HttpsURLConnection) new URL("https://divinediscordbots.com/bot/" + botId + "/" + endpoint).openConnection();
             connection.addRequestProperty("Authorization", token);
             connection.addRequestProperty("Content-Type", "application/json");
             connection.setRequestMethod("POST");
@@ -74,7 +78,7 @@ public class RequestHandler {
 
             lastPost = System.currentTimeMillis();
         } catch(IOException e) {
-            log.error("There was a problem processing that request. -> postStats()");
+            log.error("There was a problem processing that request. -> doRequest() [POST]");
         }
     }
 

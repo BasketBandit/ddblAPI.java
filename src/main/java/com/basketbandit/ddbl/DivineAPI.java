@@ -35,7 +35,7 @@ public class DivineAPI {
             throw new IllegalArgumentException("Shard count must be 0 or greater.");
         }
 
-        String json = "{\"server_count\" : " + serverCount + ", \"shards\" : " + shardCount + "}";
+        String json = "{\"server_count\" : " + serverCount + ",\"shards\" : " + shardCount + "}";
         RequestHandler.doRequest(this.botId, "stats", this.token, json);
     }
 

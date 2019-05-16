@@ -36,7 +36,7 @@ public class DivineAPI {
         }
 
         String json = "{\"server_count\" : " + serverCount + ",\"shards\" : " + shardCount + "}";
-        RequestHandler.doRequest(this.botId, "stats", this.token, json);
+        RequestHandler.doPostRequest(this.botId, "stats", this.token, json);
     }
 
     /**
@@ -50,7 +50,7 @@ public class DivineAPI {
         }
 
         String json = "{\"server_count\" : " + serverCount + "}";
-        RequestHandler.doRequest(this.botId, "stats", this.token, json);
+        RequestHandler.doPostRequest(this.botId, "stats", this.token, json);
     }
 
     /**
@@ -68,7 +68,7 @@ public class DivineAPI {
      * @return DivineBot
      */
     public DivineBot getStats() {
-        JsonObject stats = RequestHandler.doRequest(this.botId, "stats");
+        JsonObject stats = RequestHandler.doGetRequest(this.botId, "stats");
 
         if(stats.has("stats")) {
             return new DivineBot(stats);
@@ -84,7 +84,7 @@ public class DivineAPI {
      * @return List<Vote>
      */
     public List<Vote> getVotes() {
-        JsonArray votes = RequestHandler.doRequest(this.botId, "votes").getAsJsonArray("votes");
+        JsonArray votes = RequestHandler.doGetRequest(this.botId, "votes").getAsJsonArray("votes");
 
         ArrayList<Vote> voteList = new ArrayList<>();
         for(JsonElement vote: votes) {
@@ -113,7 +113,7 @@ public class DivineAPI {
      * @return boolean if the user has voted or not
      */
     public boolean hasVoted(String userId, int hours) {
-        JsonArray votes = RequestHandler.doRequest(this.botId, "votes?filter=" + hours).getAsJsonArray("votes");
+        JsonArray votes = RequestHandler.doGetRequest(this.botId, "votes?filter=" + hours).getAsJsonArray("votes");
 
         for(JsonElement vote: votes) {
             if(vote.getAsJsonObject().get("id").getAsString().equals(userId)) {

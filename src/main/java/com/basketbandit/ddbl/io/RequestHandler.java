@@ -21,7 +21,7 @@ public class RequestHandler {
      * @param endpoint which API endpoint to hit up
      * @return JsonObject of the returned content
      */
-    public static JsonObject doRequest(String botId, String endpoint) {
+    public static JsonObject doGetRequest(String botId, String endpoint) {
         try {
             Request request = new Request.Builder()
                     .url("https://divinediscordbots.com/bot/" + botId + "/" + endpoint)
@@ -49,7 +49,7 @@ public class RequestHandler {
      * @param token API token to use for authentication
      * @param data json data to send to the server
      */
-    public static void doRequest(String botId, String endpoint, String token, String data) {
+    public static void doPostRequest(String botId, String endpoint, String token, String data) {
         try {
             if(!canPost()) {
                 log.warn("You can only post server count every 1 minute.");

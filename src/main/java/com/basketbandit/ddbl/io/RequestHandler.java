@@ -12,6 +12,7 @@ public class RequestHandler {
     private static final Logger log = LoggerFactory.getLogger(RequestHandler.class);
     private static final OkHttpClient client = new OkHttpClient();
     private static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
+    private static final JsonObject empty = new JsonParser().parse("{}").getAsJsonObject();
     private static long lastPost = 0;
 
     /**
@@ -31,13 +32,17 @@ public class RequestHandler {
             Response response = client.newCall(request).execute();
 
             if(response.code() != 200) {
+                response.close();
                 throw new IOException("Unable to retrieve information from the server.");
             }
 
-            return new JsonParser().parse(response.body().string()).getAsJsonObject();
+            final JsonObject data = (response.body() != null) ? new JsonParser().parse(response.body().string()).getAsJsonObject() : empty;
+            response.close();
+
+            return data;
         } catch(IOException e) {
             log.error("There was a problem processing that request. -> doRequest() [GET]");
-            return new JsonParser().parse("{}").getAsJsonObject();
+            return empty;
         }
     }
 
@@ -52,17 +57,17 @@ public class RequestHandler {
     public static void doPostRequest(String botId, String endpoint, String token, String data) {
         try {
             if(!canPost()) {
-                log.warn("You can only post server count every 1 minute.");
+                log.warn("You can only post server count once every 1 minute.");
                 return;
             }
-
             Request request = new Request.Builder()
                     .url("https://divinediscordbots.com/bot/" + botId + "/" + endpoint)
                     .addHeader("Authorization", token)
                     .addHeader("Content-Type", "application/json")
                     .post(RequestBody.create(JSON, data))
                     .build();
-            client.newCall(request).execute();
+            Response response = client.newCall(request).execute();
+            response.close();
 
             lastPost = System.currentTimeMillis();
         } catch(IOException e) {

@@ -15,6 +15,8 @@ public class RequestHandler {
     private static final JsonObject empty = new JsonParser().parse("{}").getAsJsonObject();
     private static long lastPost = 0;
 
+    private static final String API_BASE = "https://divinediscordbots.com/bot/";
+
     /**
      * A OkHttp method used to connect to and return a JsonObject from the server.
      *
@@ -25,7 +27,7 @@ public class RequestHandler {
     public static JsonObject doGetRequest(String botId, String endpoint) {
         try {
             Request request = new Request.Builder()
-                    .url("https://divinediscordbots.com/bot/" + botId + "/" + endpoint)
+                    .url(API_BASE + botId + "/" + endpoint)
                     .addHeader("Content-Type", "application/json")
                     .addHeader("Accept", "application/json")
                     .build();
@@ -61,7 +63,7 @@ public class RequestHandler {
                 return;
             }
             Request request = new Request.Builder()
-                    .url("https://divinediscordbots.com/bot/" + botId + "/" + endpoint)
+                    .url(API_BASE + botId + "/" + endpoint)
                     .addHeader("Authorization", token)
                     .addHeader("Content-Type", "application/json")
                     .post(RequestBody.create(JSON, data))

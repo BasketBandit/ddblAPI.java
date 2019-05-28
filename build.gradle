@@ -6,7 +6,7 @@ apply plugin: 'java'
 apply plugin: 'idea'
 
 group 'BasketBandit'
-version '0.4.2'
+version '0.4.3'
 
 sourceCompatibility = 1.8
 

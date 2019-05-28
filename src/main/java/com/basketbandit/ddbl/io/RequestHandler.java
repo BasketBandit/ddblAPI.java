@@ -12,7 +12,7 @@ public class RequestHandler {
     private static final Logger log = LoggerFactory.getLogger(RequestHandler.class);
     private static final OkHttpClient client = new OkHttpClient();
     private static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
-    private static final JsonObject empty = new JsonParser().parse("{}").getAsJsonObject();
+    private static final JsonObject empty = new JsonObject();
     private static long lastPost = 0;
 
     private static final String API_BASE = "https://divinediscordbots.com/bot/";
@@ -43,7 +43,7 @@ public class RequestHandler {
 
             return data;
         } catch(IOException e) {
-            log.error("There was a problem processing that request. -> doRequest() [GET]");
+            log.error("There was a problem processing that request. -> doGetRequest()");
             return empty;
         }
     }
@@ -62,6 +62,7 @@ public class RequestHandler {
                 log.warn("You can only post server count once every 1 minute.");
                 return;
             }
+
             Request request = new Request.Builder()
                     .url(API_BASE + botId + "/" + endpoint)
                     .addHeader("Authorization", token)
@@ -69,11 +70,16 @@ public class RequestHandler {
                     .post(RequestBody.create(JSON, data))
                     .build();
             Response response = client.newCall(request).execute();
+
+            if(response.code() != 200) {
+                log.warn(response.code() + " - " + response.message());
+            }
+
             response.close();
 
             lastPost = System.currentTimeMillis();
         } catch(IOException e) {
-            log.error("There was a problem processing that request. -> doRequest() [POST]");
+            log.error("There was a problem processing that request. -> doPostRequest()");
         }
     }
 

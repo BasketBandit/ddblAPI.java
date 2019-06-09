@@ -16,6 +16,7 @@ public class RequestHandler {
     private static long lastPost = 0;
 
     private static final String API_BASE = "https://divinediscordbots.com/bot/";
+    private static final int RATE_LIMIT = 60000;
 
     /**
      * A OkHttp method used to connect to and return a JsonObject from the server.
@@ -34,14 +35,14 @@ public class RequestHandler {
             Response response = client.newCall(request).execute();
 
             if(response.code() != 200) {
-                response.close();
-                throw new IOException("Unable to retrieve information from the server.");
+                log.warn("Get request failed, server responded with code " +  response.code() + ": " + response.message());
             }
 
             final JsonObject data = (response.body() != null) ? new JsonParser().parse(response.body().string()).getAsJsonObject() : empty;
             response.close();
 
             return data;
+
         } catch(IOException e) {
             log.error("There was a problem processing that request. -> doGetRequest()");
             return empty;
@@ -56,7 +57,7 @@ public class RequestHandler {
      * @param token API token to use for authentication
      * @param data json data to send to the server
      */
-    public static void doPostRequest(String botId, String endpoint, String token, String data) {
+    public static void doPostRequest(String botId, String endpoint, String token, JsonObject data) {
         try {
             if(!canPost()) {
                 log.warn("You can only post server count once every 1 minute.");
@@ -67,17 +68,17 @@ public class RequestHandler {
                     .url(API_BASE + botId + "/" + endpoint)
                     .addHeader("Authorization", token)
                     .addHeader("Content-Type", "application/json")
-                    .post(RequestBody.create(JSON, data))
+                    .post(RequestBody.create(JSON, data.toString()))
                     .build();
             Response response = client.newCall(request).execute();
 
             if(response.code() != 200) {
-                log.warn(response.code() + " - " + response.message());
+                log.warn("Post request failed, server responded with code " +  response.code() + ": " + response.message());
             }
 
             response.close();
-
             lastPost = System.currentTimeMillis();
+
         } catch(IOException e) {
             log.error("There was a problem processing that request. -> doPostRequest()");
         }
@@ -89,6 +90,6 @@ public class RequestHandler {
      * @return boolean if the api can be posted to again
      */
     public static boolean canPost() {
-        return ((System.currentTimeMillis() - lastPost) > 60000);
+        return ((System.currentTimeMillis() - lastPost) > RATE_LIMIT);
     }
 }

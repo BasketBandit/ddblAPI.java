@@ -2,6 +2,7 @@ package com.basketbandit.ddbl;
 
 import com.basketbandit.ddbl.entity.DivineBot;
 import com.basketbandit.ddbl.entity.Vote;
+import com.basketbandit.ddbl.io.JsonBuilder;
 import com.basketbandit.ddbl.io.RequestHandler;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -35,8 +36,11 @@ public class DivineAPI {
             throw new IllegalArgumentException("Shard count must be 0 or greater.");
         }
 
-        String json = "{\"server_count\" : " + serverCount + ",\"shards\" : " + shardCount + "}";
-        RequestHandler.doPostRequest(this.botId, "stats", this.token, json);
+        JsonObject object = new JsonBuilder()
+                .addProperty("server_count", serverCount)
+                .addProperty("shards", shardCount)
+                .getObject();
+        RequestHandler.doPostRequest(this.botId, "stats", this.token, object);
     }
 
     /**
@@ -49,8 +53,10 @@ public class DivineAPI {
             throw new IllegalArgumentException("Server count must be 0 or greater.");
         }
 
-        String json = "{\"server_count\" : " + serverCount + "}";
-        RequestHandler.doPostRequest(this.botId, "stats", this.token, json);
+        JsonObject object = new JsonBuilder()
+                .addProperty("server_count", serverCount)
+                .getObject();
+        RequestHandler.doPostRequest(this.botId, "stats", this.token, object);
     }
 
     /**

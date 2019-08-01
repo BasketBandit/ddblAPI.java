@@ -68,7 +68,7 @@ public class RequestHandler {
                     .url(API_BASE + botId + "/" + endpoint)
                     .addHeader("Authorization", token)
                     .addHeader("Content-Type", "application/json")
-                    .post(RequestBody.Companion.create(data.toString(), JSON))
+                    .post(RequestBody.create(JSON, data.toString()))
                     .build();
             Response response = client.newCall(request).execute();
 

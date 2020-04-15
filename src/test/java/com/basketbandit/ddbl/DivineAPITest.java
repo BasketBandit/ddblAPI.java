@@ -19,9 +19,9 @@ class DivineAPITest {
     @Test
     void postStats() {
         System.out.println(ddbl.canPost());
-        ddbl.postStats(421, 1);
+        ddbl.postStats(424, 1);
         System.out.println(ddbl.canPost());
-        ddbl.postStats(421);
+        ddbl.postStats(424);
     }
 
     @Test

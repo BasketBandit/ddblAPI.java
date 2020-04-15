@@ -18,8 +18,7 @@ public class DivineAPI {
     private String botId;
     private String token;
 
-    private DivineAPI() {
-    }
+    private DivineAPI() {}
 
     /**
      * Posts bot server & shard count to the server.

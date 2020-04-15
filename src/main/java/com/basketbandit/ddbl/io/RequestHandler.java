@@ -38,7 +38,7 @@ public class RequestHandler {
                 log.warn("Get request failed, server responded with code " +  response.code() + ": " + response.message());
             }
 
-            final JsonObject data = (response.body() != null) ? new JsonParser().parse(response.body().string()).getAsJsonObject() : empty;
+            final JsonObject data = (response.body() != null) ? JsonParser.parseString(response.body().string()).getAsJsonObject() : empty;
             response.close();
 
             return data;

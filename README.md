@@ -121,6 +121,6 @@ dependencies {
 
 | name | version |
 |:---|:---|
-| [SLF4J](https://github.com/qos-ch/slf4j) | 2.0.0-alpha0 |
-| [OkHttp](https://github.com/square/okhttp/) | 4.0.1 |
-| [Gson](https://github.com/google/gson) | 2.8.5 |
+| [SLF4J](https://github.com/qos-ch/slf4j) | 2.0.0-alpha1 |
+| [OkHttp](https://github.com/square/okhttp/) | 4.5.0 |
+| [Gson](https://github.com/google/gson) | 2.8.6 |
